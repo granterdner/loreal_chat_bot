@@ -4,21 +4,50 @@
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
+const sendBtn = document.getElementById("sendBtn");
 
 /* =========================
    CONFIG
 ========================= */
 const WORKER_URL = "https://chatbotbuddy.grant-erdner.workers.dev/";
-//const API_URL = "https://api.openai.com/v1/chat/completions";
+
 /* =========================
    CHAT STATE
 ========================= */
 const messages = [
   {
     role: "system",
-    content:
-      "You are a refined, helpful product advisor. Keep responses clear, polished, and concise. Offer thoughtful product guidance and routines in an elegant tone.",
-  },
+    content: `
+You are a refined beauty advisor specializing exclusively in L’Oréal products.
+
+Your role:
+Help users choose the right L’Oréal products, build routines, and understand how to use them effectively.
+
+You ONLY answer questions related to:
+- L’Oréal products
+- skincare, haircare, and beauty routines using L’Oréal products
+- product recommendations and comparisons within L’Oréal
+
+You MUST NOT:
+- recommend or mention non-L’Oréal brands
+- answer unrelated questions such as math, coding, trivia, politics, or general knowledge
+
+If a question is outside your scope, politely respond with:
+"I’m here to help with L’Oréal products, routines, and recommendations. Let’s focus on finding what works best for you."
+
+Tone:
+- elegant
+- confident
+- helpful
+- concise
+
+Guidelines:
+- prioritize clear, personalized recommendations
+- explain why a product is a good fit
+- keep responses clean and not overly long
+- when relevant, ask brief follow-up questions about skin type, hair type, goals, or concerns
+`
+  }
 ];
 
 /* =========================
@@ -32,20 +61,6 @@ function addMessage(text, sender) {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-function setLoadingState(isLoading) {
-  const sendBtn = document.getElementById("sendBtn");
-
-  if (isLoading) {
-    userInput.disabled = true;
-    sendBtn.disabled = true;
-    sendBtn.style.opacity = "0.7";
-  } else {
-    userInput.disabled = false;
-    sendBtn.disabled = false;
-    sendBtn.style.opacity = "1";
-  }
-}
-
 function removeWelcomeCard() {
   const welcomeCard = chatWindow.querySelector(".welcome-card");
   if (welcomeCard) {
@@ -53,10 +68,29 @@ function removeWelcomeCard() {
   }
 }
 
+function setLoadingState(isLoading) {
+  userInput.disabled = isLoading;
+  sendBtn.disabled = isLoading;
+  sendBtn.style.opacity = isLoading ? "0.7" : "1";
+  sendBtn.style.cursor = isLoading ? "not-allowed" : "pointer";
+}
+
+function createThinkingMessage() {
+  const thinkingEl = document.createElement("div");
+  thinkingEl.classList.add("msg", "ai");
+  thinkingEl.textContent = "Thinking…";
+  chatWindow.appendChild(thinkingEl);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+  return thinkingEl;
+}
+
 /* =========================
-   INITIAL UI
+   OPTIONAL STARTER MESSAGE
 ========================= */
-addMessage("Welcome. Ask me about products, comparisons, or routines.", "ai");
+addMessage(
+  "Welcome. I can help you with L’Oréal product recommendations, routines, and comparisons.",
+  "ai"
+);
 
 /* =========================
    FORM SUBMIT
@@ -68,60 +102,56 @@ chatForm.addEventListener("submit", async (e) => {
   if (!prompt) return;
 
   removeWelcomeCard();
-
   addMessage(prompt, "user");
-  messages.push({ role: "user", content: prompt });
+
+  messages.push({
+    role: "user",
+    content: prompt
+  });
 
   userInput.value = "";
   setLoadingState(true);
 
-  const thinkingEl = document.createElement("div");
-  thinkingEl.classList.add("msg", "ai");
-  thinkingEl.textContent = "Thinking…";
-  chatWindow.appendChild(thinkingEl);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
+  const thinkingEl = createThinkingMessage();
 
   try {
-    /*const response = await fetch(API_URL, {
-      method: "POST",
-       headers: {
-    "Authorization": `Bearer ${OPENAI_API_KEY}`,
-    "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: messages,
-        max_completion_tokens: 300,
-      }),
-    });*/
-   const response = await fetch(WORKER_URL, {
+    const response = await fetch(WORKER_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages })
     });
 
     const data = await response.json();
-
     thinkingEl.remove();
 
     if (!response.ok) {
-      console.error("Worker error:", data);
-      addMessage("Sorry, something went wrong while contacting the assistant.", "ai");
+      console.error("Worker/API error:", data);
+      addMessage(
+        "Sorry, I ran into an issue connecting to the assistant. Please try again.",
+        "ai"
+      );
       return;
     }
 
     const reply =
-      data?.choices?.[0]?.message?.content ||
-      "Sorry, I could not generate a response.";
+      data?.choices?.[0]?.message?.content?.trim() ||
+      "Sorry, I wasn’t able to generate a response.";
 
     addMessage(reply, "ai");
-    messages.push({ role: "assistant", content: reply });
+
+    messages.push({
+      role: "assistant",
+      content: reply
+    });
   } catch (error) {
     thinkingEl.remove();
-    console.error("Fetch error:", error);
-    addMessage("Sorry, I couldn’t connect to the server.", "ai");
+    console.error("Network error:", error);
+    addMessage(
+      "Sorry, I couldn’t connect right now. Please check your setup and try again.",
+      "ai"
+    );
   } finally {
     setLoadingState(false);
     userInput.focus();
