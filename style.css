@@ -1,0 +1,433 @@
+/* ==============================
+   RESET
+================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ==============================
+   BRAND TOKENS
+================================= */
+:root {
+  --black: #000000;
+  --ivory: #f7f4ef;
+  --white: #ffffff;
+  --soft-white: #fdfbf8;
+  --line: rgba(0, 0, 0, 0.12);
+  --text: #171717;
+  --muted: #666666;
+  --red: #ff003b;
+  --gold: #e3a535;
+  --gold-deep: #b98725;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+/* ==============================
+   BODY
+================================= */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(227, 165, 53, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 0, 59, 0.05), transparent 24%),
+    linear-gradient(to bottom, #fbf9f6, #f5f1eb);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+/* subtle vertical luxury feel */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      transparent 24.8%,
+      rgba(0, 0, 0, 0.03) 24.9%,
+      transparent 25%,
+      transparent 49.8%,
+      rgba(0, 0, 0, 0.03) 49.9%,
+      transparent 50%,
+      transparent 74.8%,
+      rgba(0, 0, 0, 0.03) 74.9%,
+      transparent 75%
+    );
+  opacity: 0.25;
+}
+
+.page-wrapper {
+  width: min(100%, 980px);
+  position: relative;
+  z-index: 1;
+}
+
+/* ==============================
+   HEADER
+================================= */
+.site-header {
+  text-align: center;
+  padding: 28px 20px 10px;
+  margin-bottom: 30px;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+
+.site-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2.8rem, 6vw, 4.7rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--black);
+  margin-bottom: 14px;
+}
+
+.site-subtitle {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ==============================
+   CHAT SHELL
+================================= */
+.chatbox {
+  position: relative;
+  margin: 36px 0;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* top accent line */
+.chatbox::before {
+  content: "";
+  display: block;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    var(--black) 0%,
+    var(--black) 25%,
+    #ffffff 25%,
+    #ffffff 50%,
+    var(--red) 50%,
+    var(--red) 75%,
+    var(--gold) 75%,
+    var(--gold) 100%
+  );
+}
+
+/* ==============================
+   CHAT WINDOW
+================================= */
+.chat-window {
+  height: 460px;
+  overflow-y: auto;
+  padding: 28px;
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.82), rgba(247, 244, 239, 0.9));
+  white-space: pre-line;
+}
+
+/* scrollbars */
+.chat-window::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-window::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+}
+
+.chat-window::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* ==============================
+   WELCOME STATE
+================================= */
+.welcome-card {
+  max-width: 560px;
+  padding: 26px 28px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.welcome-card h2 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 2rem;
+  line-height: 1.05;
+  margin-bottom: 12px;
+  color: var(--black);
+}
+
+.welcome-card p {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 0.98rem;
+}
+
+/* ==============================
+   MESSAGES
+================================= */
+.msg {
+  max-width: 78%;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  line-height: 1.7;
+  font-size: 0.98rem;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.msg.user {
+  margin-left: auto;
+  background: var(--black);
+  color: var(--white);
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+.msg.ai {
+  margin-right: auto;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--text);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom-left-radius: 6px;
+}
+
+.msg.ai strong,
+.msg.ai b {
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* ==============================
+   FORM
+================================= */
+.chat-form {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px 22px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.chat-form input {
+  flex: 1;
+  height: 58px;
+  padding: 0 20px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 0.98rem;
+  color: var(--text);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.chat-form input::placeholder {
+  color: #8d8d8d;
+}
+
+.chat-form input:focus {
+  outline: none;
+  border-color: rgba(227, 165, 53, 0.8);
+  box-shadow: 0 0 0 4px rgba(227, 165, 53, 0.12);
+  transform: translateY(-1px);
+}
+
+.chat-form button {
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--black), #1f1f1f);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.16);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.chat-form button .material-icons {
+  font-size: 22px;
+}
+
+.chat-form button:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: linear-gradient(135deg, var(--red), #d10032);
+  box-shadow: 0 14px 28px rgba(255, 0, 59, 0.22);
+}
+
+.chat-form button:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 4px rgba(227, 165, 53, 0.16),
+    0 12px 22px rgba(0, 0, 0, 0.16);
+}
+
+/* ==============================
+   VISUALLY HIDDEN
+================================= */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==============================
+   FOOTER
+================================= */
+.site-footer {
+  margin: 34px 0 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.site-footer p {
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+
+.site-footer nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.site-footer a {
+  color: var(--black);
+  text-decoration: none;
+  position: relative;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.site-footer a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.site-footer a:hover {
+  color: var(--red);
+}
+
+.site-footer a:hover::after {
+  transform: scaleX(1);
+}
+
+/* ==============================
+   RESPONSIVE
+================================= */
+@media (max-width: 700px) {
+  body {
+    padding: 28px 14px;
+  }
+
+  .site-header {
+    padding-top: 10px;
+  }
+
+  .site-title {
+    font-size: 2.7rem;
+  }
+
+  .site-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .chat-window {
+    height: 420px;
+    padding: 20px;
+  }
+
+  .chat-form {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .chat-form input {
+    height: 52px;
+    font-size: 0.95rem;
+    padding: 0 16px;
+  }
+
+  .chat-form button {
+    width: 52px;
+    height: 52px;
+  }
+
+  .msg {
+    max-width: 88%;
+  }
+
+  .welcome-card {
+    padding: 22px 20px;
+  }
+
+  .welcome-card h2 {
+    font-size: 1.7rem;
+  }
+}
